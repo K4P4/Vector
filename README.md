@@ -17,19 +17,6 @@ template <typename T>
     }
 }
 ```
-## shrink_to_fit
-```
-template <typename T>
-    void Vector<T>::shrink_to_fit()
-    {
-    if(size_ < reserved_size_){
-        for(int i = size_; i < reserved_size_; i++){
-            delete &array_[i];
-        }
-        reserved_size_ = size_;
-    }
-}
-```
 
 ## resize
 ```
@@ -84,6 +71,40 @@ template <typename T>
 }
 ```
 
+## insert su daug elementų
+  ```
+      template <typename T>
+    void Vector<T>::insert(iterator it, int n, T value){
+        int i = 0;
+		if (size_ + n < reserved_size_) {
+			for (iterator itr = array_ + size_ + n-1; itr != it+n-1; itr--, i++)
+				array_[size_ - i + n - 1] = array_[size_ - i - 1];
+			for (int j = 0; j < n; j++, i++) {
+				array_[size_ - i + n - 1] = value;
+			}
+			size_++;
+		}
+		else {
+			auto_array<T> new_array(new T[size_ + n]); //sukuria nauja reikiamo dydzio masyva
+			int i = 0, j = 0;
+
+			for (iterator itr = array_; itr != it; itr++, i++)
+				new_array[i] = array_[i];
+
+			for (j; j < n; j++)
+				new_array[i + j] = value;
+
+			for (iterator itr = array_ + i; itr != array_ + size_; itr++, i++)
+				new_array[i + j] = array_[i];
+
+			delete[] array_; //istrina sena masyva
+			array_ = new_array.release();
+			size_ = size_ + n;
+			if (reserved_size_ < size_) reserved_size_ = size_;
+		}
+    }
+  ```
+
 ## erase
 ```
 template <typename T>
@@ -100,7 +121,7 @@ template <typename T>
 		size_ -= temp;
 		return it2;
 	}
-  ```
+```
   
 # 2 Užduotis
 
