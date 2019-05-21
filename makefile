@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-I.
 DEPS = Studentas.h Vector.h Zmogus.h
-OBJ = main.o Studentas.o Zmogus.o Vector.o
+OBJ = main.o
 
 %.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
